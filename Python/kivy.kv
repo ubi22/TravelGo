@@ -1,0 +1,95 @@
+<sDrawer>:
+<ContentNavigationDrawer>:
+
+Screen:
+
+    MDNavigationLayout:
+
+        ScreenManager:
+            id: screen_manager
+            Screen:
+                name: "enter"
+                FitImage:
+                    size_hint: 1, 1
+                    source: "C:/Users/Admin/PycharmProjects/TravelGo/Photo/fon.png"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                MDTextField:
+                    id: login
+                    size_hint_x: None
+                    width: "400dp"
+                    hint_text: "Login"
+                    pos_hint: {"center_x": .5, "center_y": .7}
+                MDTextField:
+                    id: password
+                    size_hint_x: None
+                    width: "400dp"
+                    hint_text: "Password"
+                    pos_hint: {"center_x": .5, "center_y": .6}
+                MDRaisedButton:
+                    text: "Войти"
+                    pos_hint: {"center_x": .5, "center_y": .4}
+                    on_release:
+                        app.log_in()
+                MDTextButton:
+                    text: "Если нет,"
+                    custom_color: 0, 1, 0, 1
+                    pos_hint: {"center_x": .43, "center_y": .3}
+                MDTextButton:
+                    text: "Создать"
+                    color: 0, 0, 1, 1
+                    pos_hint: {"center_x": .57, "center_y": .3}
+                    on_press:
+                        app.screen("Creatbs")
+            Screen:
+                name: "home"
+                MDBottomNavigation:
+                    panel_color: .2, .2, .2, 1
+                    MDBottomNavigationItem:
+                        name: 'screen 1'
+                        text: 'Туры'
+                        icon: 'wallet-travel'
+
+                    MDBottomNavigationItem:
+                        name: 'screen 2'
+                        text: 'Отели'
+                        icon: 'home-search-outline'
+                        MDIconButton:
+                            icon: "arrow-left"
+                            pos_hint: {"center_x": .1, "center_y": .9}
+                            on_release:
+                                app.screen("name")
+                        MDTextField:
+                            id: poisks
+                            hint_text: "Поиск"
+                            size_hint: .6, None
+                            pos_hint: {"center_x": .51, "center_y": .9}
+                        MDIconButton:
+                            icon: "search-web"
+                            pos_hint: {"center_x": .8, "center_y": .9}
+                            on_release:
+                                app.show_example_grid_bottom_sheet()
+                        MDIconButton:
+                            id: acc
+                            icon: "account-circle-outline"
+                            font_size: "60sp"
+                            pos_hint: {"center_x": .9, "center_y": .909}
+                            on_release:
+                                app.account()
+                                app.screen("setting")
+
+                    MDBottomNavigationItem:
+                        name: 'screen 3'
+                        text: 'Профиль'
+                        icon: 'account-settings-outline'
+
+            Screen:
+                name: "creatbs"
+            Screen:
+                name: "admin"
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            ContentNavigationDrawer:
+                screen_manager: screen_manager
+                nav_drawer: nav_drawer
