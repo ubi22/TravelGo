@@ -44,6 +44,9 @@ from kivy.uix.modalview import ModalView
 from kivy.lang import Builder
 from kivymd.uix.list import MDList
 from kivymd import images_path
+from kivymd.uix.list import OneLineIconListItem
+from kivymd.app import MDApp
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivy.properties import ObjectProperty
@@ -62,6 +65,13 @@ from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
+from kivy.lang import Builder
+from kivy.metrics import dp
+from kivy.properties import StringProperty
+
+from kivymd.uix.list import OneLineIconListItem
+from kivymd.app import MDApp
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.bottomsheet import MDGridBottomSheet
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.lang.builder import Builder
@@ -90,8 +100,8 @@ with sqlite3.connect('database.db') as db:
         id INTEGER PRIMARY KEY,
         login VARCHAR(15),
         password VARCHAR(20),
-        name TEXT,
-        age TEXT
+        email TEXT,
+        name TEXT
 
 )
     """
@@ -102,23 +112,7 @@ with sqlite3.connect('search-base.db') as fut:
     db = fut.cursor()
     table = """
     CREATE TABLE IF NOT EXISTS search(
-        fio TEXT,
-        kvant TEXT,
-        photo TEXT,
-        op TEXT,
-        pn1 TEXT,
-        pn2 TEXT,
-        vt1 TEXT,
-        vt2 TEXT,
-        cr1 TEXT,
-        cr2 TEXT,
-        cht1 TEXT,
-        cht2 TEXT,
-        pt1 TEXT,
-        pt2 TEXT,
-        cb1 TEXT,
-        cb2 TEXT,
-        ob TEXT
+        name TEXT
 
 )
     """
@@ -130,6 +124,7 @@ class sDrawer(MDFloatLayout):
 
 
 class TravelGO(MDApp):
+
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Orange"
@@ -141,12 +136,8 @@ class TravelGO(MDApp):
     def registration(self):
         login = self.root.ids.log.text
         password = self.root.ids.pase.text
-        name = self.root.ids.nameas.text
-        age = self.root.ids.age.text
-        otch = self.root.ids.otchims.text
-        famal = self.root.ids.famalis.text
-
-        fio = f"{age, otch, famal}"
+        email = self.root.ids.email.text
+        name = self.root.ids.name.text
         try:
             db = sqlite3.connect("database.db")
             cursor = db.cursor()
@@ -156,10 +147,10 @@ class TravelGO(MDApp):
             cursor.execute("SELECT login FROM users WHERE login = ?", [login])
 
             if cursor.fetchone() is None:
-                values = [login, password, fio, age]
-                cursor.execute("INSERT INTO users(login, password, name, age) VALUES(?,md5(?),?,?)", values)
+                values = [login, password, email, name]
+                cursor.execute("INSERT INTO users(login, password, email, name) VALUES(?,md5(?),?,?)", values)
                 toast("Создали акаунт")
-                self.root.ids.screen_manager.current = "Enter"
+                self.root.ids.screen_manager.current = "enter"
                 db.commit()
             else:
                 toast("Tакой логин уже есть")
@@ -191,7 +182,7 @@ class TravelGO(MDApp):
                         toast("Пороль не верный")
                     else:
                         toast("Вы вошли")
-                        self.root.ids.screen_manager.current = "search"
+                        self.root.ids.screen_manager.current = "home"
             except sqlite3.Error as e:
                 print('Error, e')
             finally:

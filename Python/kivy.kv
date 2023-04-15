@@ -11,35 +11,28 @@ Screen:
                 name: "enter"
                 FitImage:
                     size_hint: 1, 1
-                    source: "C:/Users/Admin/PycharmProjects/TravelGo/Photo/fon.png"
+                    source: "G:/TravelGo/Photo/signin.png"
                     pos_hint: {"center_x": .5, "center_y": .5}
                 MDTextField:
                     id: login
-                    size_hint_x: None
+                    hint_text_color_normal: "Black"
+                    size_hint: .73, .09
                     width: "400dp"
                     hint_text: "Login"
-                    pos_hint: {"center_x": .5, "center_y": .7}
+                    pos_hint: {"center_x": .5, "center_y": .55}
                 MDTextField:
                     id: password
-                    size_hint_x: None
+                    hint_text_color_normal: "black"
+                    size_hint: .73, .09
                     width: "400dp"
                     hint_text: "Password"
-                    pos_hint: {"center_x": .5, "center_y": .6}
-                MDRaisedButton:
-                    text: "Войти"
-                    pos_hint: {"center_x": .5, "center_y": .4}
-                    on_release:
-                        app.log_in()
-                MDTextButton:
-                    text: "Если нет,"
-                    custom_color: 0, 1, 0, 1
-                    pos_hint: {"center_x": .43, "center_y": .3}
-                MDTextButton:
-                    text: "Создать"
-                    color: 0, 0, 1, 1
-                    pos_hint: {"center_x": .57, "center_y": .3}
+                    pos_hint: {"center_x": .5, "center_y": .45}
+                MDFlatButton:
+                    text: ""
+                    font_size: "5sp"
+                    pos_hint: {"center_x": .58, "center_y": .135}
                     on_press:
-                        app.screen("Creatbs")
+                        app.screen("creatbs")
             Screen:
                 name: "home"
                 MDBottomNavigation:
@@ -75,7 +68,7 @@ Screen:
                             pos_hint: {"center_x": .9, "center_y": .909}
                             on_release:
                                 app.account()
-                                app.screen("setting")
+
 
                     MDBottomNavigationItem:
                         name: 'screen 3'
@@ -84,6 +77,50 @@ Screen:
 
             Screen:
                 name: "creatbs"
+                FitImage:
+                    size_hint: 1, 1
+                    source: "G:/TravelGo/Photo/signup.png"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                MDTextField:
+                    id: log
+                    hint_text_color_normal: "Black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "Login"
+                    pos_hint: {"center_x": .49, "center_y": .635}
+                MDTextField:
+                    id: pase
+                    hint_text_color_normal: "black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "Password"
+                    pos_hint: {"center_x": .49, "center_y": .535}
+                MDTextField:
+                    id: email
+                    hint_text_color_normal: "Black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "E-mail"
+                    pos_hint: {"center_x": .49, "center_y": .435}
+                MDTextField:
+                    id: name
+                    hint_text_color_normal: "black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "Name"
+                    pos_hint: {"center_x": .49, "center_y": .335}
+                MDFlatButton:
+                    text: "You want to be our partner?"
+                    theme_text_color: "Custom"
+                    text_color: 0.65, 0.65, 0.65, 1
+                    pos_hint: {"center_x": .5, "center_y": .12}
+                    on_release:
+                        app.screen("")
+                MDFlatButton:
+                    text: ""
+                    pos_hint: {"center_x": .5, "center_y": .2}
+                    on_release:
+                        app.registration()
             Screen:
                 name: "admin"
 
