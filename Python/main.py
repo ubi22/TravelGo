@@ -92,6 +92,21 @@ class ContentNavigationDrawer(FloatLayout):
 def md5sum(value):
     return hashlib.md5(value.encode()).hexdigest()
 
+with sqlite3.connect('databaseadmin.db') as db:
+    cursor = db.cursor()
+    query = """
+    CREATE TABLE IF NOT EXISTS admin(
+        id INTEGER PRIMARY KEY,
+        login VARCHAR(15),
+        password VARCHAR(20),
+        email TEXT,
+        name TEXT,
+        phone TEXT
+
+)
+    """
+
+    cursor.executescript(query)
 
 with sqlite3.connect('database.db') as db:
     cursor = db.cursor()
@@ -133,7 +148,34 @@ class TravelGO(MDApp):
     def screen(self, sed):
         self.root.ids.screen_manager.current = sed
 
-    def registration(self):
+    def registrationadmin(self):
+        login = self.root.ids.logcom.text
+        password = self.root.ids.pasecom.text
+        name = self.root.ids.namecom.text
+        try:
+            db = sqlite3.connect("databaseadmin.db")
+            cursor = db.cursor()
+
+            db.create_function("md5", 1, md5sum)
+
+            cursor.execute("SELECT login FROM admin WHERE login = ?", [login])
+
+            if cursor.fetchone() is None:
+                values = [login, password, name]
+                cursor.execute("INSERT INTO admin(login, password, name) VALUES(?,md5(?),?)", values)
+                toast("Создали акаунт")
+                self.root.ids.screen_manager.current = "enter"
+                db.commit()
+            else:
+                toast("Tакой логин уже есть")
+
+        except sqlite3.Error as e:
+            print("Error", e)
+        finally:
+            cursor.close()
+            db.close()
+
+    def registrationuser(self):
         login = self.root.ids.log.text
         password = self.root.ids.pase.text
         email = self.root.ids.email.text
@@ -164,30 +206,36 @@ class TravelGO(MDApp):
     def log_in(self):
         login = self.root.ids.login.text
         password = self.root.ids.password.text
-        if login == 'admin':
-            if password == '1234':
-                toast("Здраствуйте Admin")
-                self.root.ids.screen_manager.current = "admin"
-        else:
-            try:
-                db = sqlite3.connect("database.db")
-                cursor = db.cursor()
-                db.create_function("md5", 1, md5sum)
-                cursor.execute("SELECT login FROM users WHERE login = ?", [login])
-                if cursor.fetchone() is None:
+
+        try:
+            db = sqlite3.connect("database.db")
+            cursor = db.cursor()
+            db.create_function("md5", 1, md5sum)
+            cursor.execute("SELECT login FROM users WHERE login = ?", [login])
+            if cursor.fetchone() is None:
+                ss = sqlite3.connect("databaseadmin.db")
+                cur = ss.cursor()
+                ss.create_function("md5", 1, md5sum)
+                cur.execute("SELECT login FROM admin WHERE login = ?", [login])
+                if cur.fetchone() is None:
                     toast("Такого логина не существует")
                 else:
-                    cursor.execute("SELECT login FROM users WHERE login = ? AND password = md5(?)", [login, password])
-                    if cursor.fetchone() is None:
+                    cur.execute("SELECT login FROM admin WHERE login = ? AND password = md5(?)", [login, password])
+                    if cur.fetchone() is None:
                         toast("Пороль не верный")
                     else:
                         toast("Вы вошли")
-                        self.root.ids.screen_manager.current = "home"
-            except sqlite3.Error as e:
-                print('Error, e')
-            finally:
-                cursor.close()
-                db.close()
+                        self.root.ids.screen_manager.current = "admin"
+            else:
+                cursor.execute("SELECT login FROM users WHERE login = ? AND password = md5(?)", [login, password])
+                if cursor.fetchone() is None:
+                    toast("Пороль не верный")
+                else:
+                    toast("Вы вошли")
+                    self.root.ids.screen_manager.current = "home"
+        finally:
+            cursor.close()
+            db.close()
 
 
 TravelGO().run()

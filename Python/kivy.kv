@@ -29,7 +29,13 @@ Screen:
                     pos_hint: {"center_x": .5, "center_y": .45}
                 MDFlatButton:
                     text: ""
-                    font_size: "5sp"
+                    font_size: "25sp"
+                    pos_hint: {"center_x": .5, "center_y": .275}
+                    on_press:
+                        app.log_in()
+                MDFlatButton:
+                    text: ""
+                    font_size: "15sp"
                     pos_hint: {"center_x": .58, "center_y": .135}
                     on_press:
                         app.screen("creatbs")
@@ -45,12 +51,7 @@ Screen:
                     MDBottomNavigationItem:
                         name: 'screen 2'
                         text: 'Отели'
-                        icon: 'home-search-outline'
-                        MDIconButton:
-                            icon: "arrow-left"
-                            pos_hint: {"center_x": .1, "center_y": .9}
-                            on_release:
-                                app.screen("name")
+                        icon: 'domain-plus'
                         MDTextField:
                             id: poisks
                             hint_text: "Поиск"
@@ -101,28 +102,110 @@ Screen:
                     size_hint: .68, .07
                     width: "400dp"
                     hint_text: "E-mail"
+                    helper_text: "user@gmail.com"
+                    helper_text_mode: "on_focus"
                     pos_hint: {"center_x": .49, "center_y": .435}
                 MDTextField:
                     id: name
                     hint_text_color_normal: "black"
                     size_hint: .68, .07
                     width: "400dp"
+                    helper_text: "Surname Name Patronymic"
+                    helper_text_mode: "on_focus"
                     hint_text: "Name"
                     pos_hint: {"center_x": .49, "center_y": .335}
+                MDIconButton:
+                    icon: "arrow-left"
+                    pos_hint: {"center_x": .13, "center_y": .78}
+                    on_release:
+                        app.screen("enter")
                 MDFlatButton:
                     text: "You want to be our partner?"
                     theme_text_color: "Custom"
                     text_color: 0.65, 0.65, 0.65, 1
                     pos_hint: {"center_x": .5, "center_y": .12}
                     on_release:
-                        app.screen("")
+                        app.screen("partner")
                 MDFlatButton:
                     text: ""
                     pos_hint: {"center_x": .5, "center_y": .2}
                     on_release:
-                        app.registration()
+                        app.registrationuser()
             Screen:
                 name: "admin"
+                MDBottomNavigation:
+                    panel_color: .48, .136, .123, 1
+                    MDBottomNavigationItem:
+                        name: 'screen 1'
+                        text: 'Туры'
+                        icon: 'briefcase-plus-outline'
+
+
+                    MDBottomNavigationItem:
+                        name: 'screen 2'
+                        text: 'Отели'
+                        icon: 'domain-plus'
+                        ScrollView:
+                            MDFloatLayout:
+                                FitImage:
+                                    source: "G:/TravelGo/Photo/camera.png"
+                                    size_hint:  1, .2
+                                    pos_hint: {"center_x": .5, "center_y": .9}
+                                MDIconButton:
+                                    icon: "camera-outline"
+                                    pos_hint: {"center_x": .5, "center_y": .895}
+                                    user_font_size: "75sp"
+                                    on_release:
+                                        app.screen("enter")
+                                MDTextField:
+                                    id: name
+                                    hint_text: "Название Тура"
+                                MDTextField:
+                                    id: name
+                                    hint_text: "Описание"
+
+
+                    MDBottomNavigationItem:
+                        name: 'screen 3'
+                        text: 'Профиль'
+                        icon: 'account-settings-outline'
+            Screen:
+                name: "partner"
+                FitImage:
+                    size_hint: 1, 1
+                    source: "G:/TravelGo/Photo/signup.png"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                MDTextField:
+                    id: logcom
+                    hint_text_color_normal: "Black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "Login"
+                    pos_hint: {"center_x": .49, "center_y": .635}
+                MDTextField:
+                    id: pasecom
+                    hint_text_color_normal: "black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "Password"
+                    pos_hint: {"center_x": .49, "center_y": .535}
+                MDTextField:
+                    id: namecom
+                    hint_text_color_normal: "black"
+                    size_hint: .68, .07
+                    width: "400dp"
+                    hint_text: "Name Company"
+                    pos_hint: {"center_x": .49, "center_y": .435}
+                MDIconButton:
+                    icon: "arrow-left"
+                    pos_hint: {"center_x": .13, "center_y": .78}
+                    on_release:
+                        app.screen("enter")
+                MDFlatButton:
+                    text: ""
+                    pos_hint: {"center_x": .5, "center_y": .2}
+                    on_release:
+                        app.registrationadmin()
 
         MDNavigationDrawer:
             id: nav_drawer
