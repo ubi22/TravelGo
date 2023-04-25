@@ -127,8 +127,19 @@ with sqlite3.connect('search-base.db') as fut:
     db = fut.cursor()
     table = """
     CREATE TABLE IF NOT EXISTS search(
-        name TEXT
-
+        name TEXT,
+        opis TEXT,
+        num TEXT,
+        gmail TEXT,
+        h1 TEXT,
+        h2 TEXT,
+        h3 TEXT,
+        h4 TEXT,
+        h5 TEXT,
+        camera TEXT,
+        login TEXT,
+        sale TEXT
+        
 )
     """
     db.executescript(table)
@@ -138,10 +149,18 @@ class sDrawer(MDFloatLayout):
     pass
 
 
+v = None
 class TravelGO(MDApp):
-    data = {
-        'Создать':'language-php',
-    }
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_keyboard=self.events)
+        self.manager_open = False
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_path,
+            preview=True,
+        )
 
     def build(self):
         self.theme_cls.theme_style = "Dark"
@@ -150,6 +169,74 @@ class TravelGO(MDApp):
 
     def screen(self, sed):
         self.root.ids.screen_manager.current = sed
+
+    def file_manager_open(self, file):
+        global v
+        if file == 0:
+            self.file_manager.show('/')
+            v = "prou"
+        elif file == 1:
+            self.file_manager.show('/')
+            v = "proa"
+        elif file == 2:
+            self.file_manager.show('/')
+            v = "h1"
+        elif file == 3:
+            self.file_manager.show('/')
+            v = "h2"
+        elif file == 4:
+            self.file_manager.show('/')
+            v = "h3"
+        elif file == 5:
+            self.file_manager.show('/')
+            v = "h4"
+        elif file == 6:
+            self.file_manager.show('/')
+            v = "h5"
+        elif file == 7:
+            self.file_manager.show('/')
+            v = "protravel"
+        self.manager_open = True
+
+    def select_path(self, path):
+        '''It will be called when you click on the file name
+        or the catalog selection button.
+
+        :type path: str;
+        :param path: path to the selected directory or file;
+        '''
+        global v
+        if v == "prou":
+            self.root.ids.iconhome.icon = f"{path}"
+        elif v == "proa":
+            self.root.ids.iconadmin.icon = f"{path}"
+        elif v == "h1":
+            self.root.ids.h1.source = f"{path}"
+        elif v == "h2":
+            self.root.ids.h2.source = f"{path}"
+        elif v == "h3":
+            self.root.ids.h3.source = f"{path}"
+        elif v == "h4":
+            self.root.ids.h4.source = f"{path}"
+        elif v == "h5":
+            self.root.ids.h5.source = f"{path}"
+        elif v == "protravel":
+            self.root.ids.camera.source = f"{path}"
+        self.exit_manager()
+
+    def exit_manager(self, *args):
+        '''Called when the user reaches the root of the directory tree.'''
+
+        self.manager_open = False
+        self.file_manager.close()
+
+    def events(self, instance, keyboard, keycode, text, modifiers):
+        '''Called when buttons are pressed on the mobile device.'''
+
+        if keyboard in (1001, 27):
+            if self.manager_open:
+                self.file_manager.back()
+        return True
 
     def registrationadmin(self):
         login = self.root.ids.logincom.text
@@ -240,7 +327,53 @@ class TravelGO(MDApp):
         finally:
             cursor.close()
             db.close()
+
+    def create(self):
+        name = self.root.ids.namet.text
+        opis = self.root.ids.op.text
+        h1 = self.root.ids.h1.source
+        h2 = self.root.ids.h2.source
+        h3 = self.root.ids.h3.source
+        h4 = self.root.ids.h4.source
+        h5 = self.root.ids.h5.source
+        num = self.root.ids.phonea.text
+        gmaila = self.root.ids.emaila.text
+        camera = self.root.ids.camera.source
+        login = self.root.ids.login.text
+        sale = self.root.ids.sele.text
+        try:
+            fut = sqlite3.connect("search-base.db")
+            searchs = fut.cursor()
+            values = [name, opis, num, gmaila, h1, h2, h3, h4, h5, camera, login, sale]
+            searchs.execute("INSERT INTO search(name, opis, num, gmail, h1, h2, h3, h4, h5, camera, login, sale) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",values)
+            print(values)
+            fut.commit()
+            self.root.ids.screen_manager.current = "admin"
+        except sqlite3.Error as e:
+            print("Error", e)
     def tyr(self):
-        pass
+        try:
+            poisk = self.root.ids.login.text
+            fut = sqlite3.connect("search-base.db")
+            searchs = fut.cursor()
+            searchs.execute(f'''SELECT * FROM search WHERE login LIKE '%{poisk}%';''')
+            three_results = searchs.fetchall()
+            if len(three_results) == 0:
+                toast('Такого преподователя нет')
+            else:
+                s = len(three_results)
+                for i in range(s):
+                    # conten = sDrawer()
+                    # a = self.root.ids.fer.text
+                    # f = self.root.ids.hy.text
+                    # d = self.root.ids.ger.text
+                    # if self.fyx == 0:
+                        # conten.add_widget(FitImage(source=self.pomi, size_hint={0.25, 0.85}))
+                        # conten.add_widget(ThreeLineListItem(text=f'{f}', secondary_text=f"{a} {d}"))
+                        # self.root.ids.md_list.add_widget(conten)
+                    pass
+
+        except sqlite3.Error as e:
+                print("Error", e)
 
 TravelGO().run()
