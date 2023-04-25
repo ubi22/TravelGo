@@ -1,4 +1,6 @@
 <sDrawer>:
+    orientation: "horizontal"
+
 <ContentNavigationDrawer>:
 Screen:
 
@@ -10,8 +12,9 @@ Screen:
                 name: "enter"
                 FitImage:
                     size_hint: 1, 1
-                    source: "G:/TravelGo/Photo/In.png"
+                    source: "/TravelGo/Photo/In.png"
                     pos_hint: {"center_x": .5, "center_y": .5}
+
                 MDTextField:
                     id: login
                     hint_text_color_normal: "Black"
@@ -37,7 +40,7 @@ Screen:
                     font_size: "5sp"
                     pos_hint: {"center_x": .58, "center_y": .135}
                     on_press:
-                        app.screen("creatbs")
+                        app.screen(1)
             Screen:
                 name: "home"
                 MDBottomNavigation:
@@ -47,13 +50,13 @@ Screen:
                         text: 'Туры'
                         icon: 'wallet-travel'
                         FitImage:
-                            source: "G:/TravelGo/Photo/camera.png"
+                            source: "/TravelGo/Photo/camera.png"
                     MDBottomNavigationItem:
                         name: 'screen 2'
                         text: 'Отели'
                         icon: 'home-search-outline'
                         FitImage:
-                            source: "G:/TravelGo/Photo/camera.png"
+                            source: "/TravelGo/Photo/camera.png"
                         MDIconButton:
                             icon: "arrow-left"
                             pos_hint: {"center_x": .1, "center_y": .9}
@@ -83,7 +86,7 @@ Screen:
                         text: 'Профиль'
                         icon: 'account-settings-outline'
                         FitImage:
-                            source: "G:/TravelGo/Photo/camera.png"
+                            source: "/TravelGo/Photo/camera.png"
                         BoxLayout:
                             orientation: "vertical"
                             padding: "6dp"
@@ -120,7 +123,7 @@ Screen:
                 name: "creatbs"
                 FitImage:
                     size_hint: 1, 1
-                    source: "G:/TravelGo/Photo/Up.png"
+                    source: "/TravelGo/Photo/Up.png"
                     pos_hint: {"center_x": .5, "center_y": .5}
                 MDTextField:
                     id: log
@@ -170,7 +173,7 @@ Screen:
                 name: "partner"
                 FitImage:
                     size_hint: 1, 1
-                    source: "G:/TravelGo/Photo/partner.png"
+                    source: "/TravelGo/Photo/partner.png"
                     pos_hint: {"center_x": .5, "center_y": .5}
                 MDTextField:
                     id: namecom
@@ -207,7 +210,7 @@ Screen:
                         text: 'Туры'
                         icon: 'briefcase-plus-outline'
                         FitImage:
-                            source: "G:/TravelGo/Photo/camera.png"
+                            source: "/TravelGo/Photo/camera.png"
                         ScrollView:
                             scroll_timeout : 150
                             MDList:
@@ -215,11 +218,6 @@ Screen:
                                 padding: 0
                                 BoxLayout:
                                     orientation: "horizontal"
-                                    FitImage:
-                                        source: "G:/TravelGo/Photo/up.png"
-                                        size_hint: 0.25, 0.85
-                                    BoxLayout:
-                                        orientation: "vertical"
 
                         FloatLayout:
                             MDIconButton:
@@ -234,14 +232,14 @@ Screen:
                         text: 'Отели'
                         icon: 'domain-plus'
                         FitImage:
-                            source: "G:/TravelGo/Photo/camera.png"
+                            source: "/TravelGo/Photo/camera.png"
 
                     MDBottomNavigationItem:
                         name: 'screen 3'
                         text: 'Профиль'
                         icon: 'account-settings-outline'
                         FitImage:
-                            source: "G:/TravelGo/Photo/camera.png"
+                            source: "/TravelGo/Photo/camera.png"
                         BoxLayout:
                             orientation: "vertical"
                             padding: "6dp"
@@ -296,27 +294,27 @@ Screen:
                 FitImage:
                     id: h1
                     pos_hint: {"center_x": .1, "center_y": .5}
-                    source: "G:/TravelGo/Photo/camera.png"
+                    source: "/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h2
                     pos_hint: {"center_x": .3, "center_y": .5}
-                    source: "G:/TravelGo/Photo/camera.png"
+                    source: "/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h3
                     pos_hint: {"center_x": .5, "center_y": .5}
-                    source: "G:/TravelGo/Photo/camera.png"
+                    source: "/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h4
                     pos_hint: {"center_x": .7, "center_y": .5}
-                    source: "G:/TravelGo/Photo/camera.png"
+                    source: "/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h5
                     pos_hint: {"center_x": .9, "center_y": .5}
-                    source: "G:/TravelGo/Photo/camera.png"
+                    source: "/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 MDIconButton:
                     icon: "camera"
@@ -358,7 +356,7 @@ Screen:
                 FitImage:
                     id: camera
                     pos_hint: {"center_x": .5, "center_y": .9}
-                    source: "G:/TravelGo/Photo/camera.png"
+                    source: "/TravelGo/Photo/camera.png"
                     size_hint: 1, .21
                 MDIconButton:
                     icon: "camera"

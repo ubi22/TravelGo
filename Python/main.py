@@ -145,7 +145,7 @@ with sqlite3.connect('search-base.db') as fut:
     db.executescript(table)
 
 
-class sDrawer(MDFloatLayout):
+class sDrawer(BoxLayout):
     pass
 
 
@@ -161,6 +161,7 @@ class TravelGO(MDApp):
             select_path=self.select_path,
             preview=True,
         )
+        self.se = []
 
     def build(self):
         self.theme_cls.theme_style = "Dark"
@@ -351,6 +352,7 @@ class TravelGO(MDApp):
             self.root.ids.screen_manager.current = "admin"
         except sqlite3.Error as e:
             print("Error", e)
+
     def tyr(self):
         try:
             poisk = self.root.ids.login.text
@@ -362,18 +364,37 @@ class TravelGO(MDApp):
                 toast('Такого преподователя нет')
             else:
                 s = len(three_results)
+                print(s)
                 for i in range(s):
-                    # conten = sDrawer()
-                    # a = self.root.ids.fer.text
-                    # f = self.root.ids.hy.text
-                    # d = self.root.ids.ger.text
-                    # if self.fyx == 0:
-                        # conten.add_widget(FitImage(source=self.pomi, size_hint={0.25, 0.85}))
-                        # conten.add_widget(ThreeLineListItem(text=f'{f}', secondary_text=f"{a} {d}"))
-                        # self.root.ids.md_list.add_widget(conten)
-                    pass
+                    conten = sDrawer()
+                    conten.add_widget(FitImage(source=f"{three_results[i][9]}", size_hint={0.25, 0.59}))
+                    self.se.append(
+                        conten.add_widget(
+                            ThreeLineListItem(
+                                text=f'{three_results[i][0]}',
+                                secondary_text=f"{three_results[i][1]}",
+                                on_press=lambda x: self.compiration(x) #self.compiration(
+                                    # m=self.se.index(
+                                    #     conten
+                                    # )
+                            )
+                         )
+                    )
+                    self.root.ids.md_list.add_widget(conten)
+
 
         except sqlite3.Error as e:
                 print("Error", e)
-
+    def compiration(self, x):
+        print(x.text)
+        # if m == 0:
+        #     print("0")
+        # elif m == 1:
+        #     print("1")
+        # elif m == 2:
+        #     print("2")
+        # elif m == 3:
+        #     print("3")
+        # elif m == 4:
+        #     print("4")
 TravelGO().run()
