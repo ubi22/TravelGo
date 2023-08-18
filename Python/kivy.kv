@@ -1,6 +1,14 @@
+<MyTile@SmartTileWithLabel>
+    size_hint_y: None
+    height: "240dp"
+<TooltipMDIconButton@MDIconButton+MDTooltip>
 <sDrawer>:
+    btn: delboxloyt
     orientation: "horizontal"
-
+    id: delboxloyt
+<StarButton@MDIconButton>
+    icon: "star"
+    on_release: self.icon = "star-outline" if self.icon == "star" else "star"
 <ContentNavigationDrawer>:
 Screen:
 
@@ -9,84 +17,55 @@ Screen:
         ScreenManager:
             id: screen_manager
             Screen:
-                name: "enter"
-                FitImage:
-                    size_hint: 1, 1
-                    source: "/TravelGo/Photo/In.png"
-                    pos_hint: {"center_x": .5, "center_y": .5}
-
-                MDTextField:
-                    id: login
-                    hint_text_color_normal: "Black"
-                    size_hint: .73, .09
-                    width: "400dp"
-                    hint_text: "Login"
-                    pos_hint: {"center_x": .5, "center_y": .55}
-                MDTextField:
-                    id: password
-                    hint_text_color_normal: "black"
-                    size_hint: .73, .09
-                    width: "400dp"
-                    hint_text: "Password"
-                    pos_hint: {"center_x": .5, "center_y": .45}
-                MDFlatButton:
-                    text: ""
-                    font_size: "5sp"
-                    pos_hint: {"center_x": .5, "center_y": .275}
-                    on_press:
-                        app.log_in()
-                MDFlatButton:
-                    text: ""
-                    font_size: "5sp"
-                    pos_hint: {"center_x": .58, "center_y": .135}
-                    on_press:
-                        app.screen(1)
-            Screen:
                 name: "home"
                 MDBottomNavigation:
                     panel_color: .2, .2, .2, 1
                     MDBottomNavigationItem:
                         name: 'screen 1'
-                        text: 'Туры'
-                        icon: 'wallet-travel'
-                        FitImage:
-                            source: "/TravelGo/Photo/camera.png"
-                    MDBottomNavigationItem:
-                        name: 'screen 2'
-                        text: 'Отели'
-                        icon: 'home-search-outline'
-                        FitImage:
-                            source: "/TravelGo/Photo/camera.png"
-                        MDIconButton:
-                            icon: "arrow-left"
-                            pos_hint: {"center_x": .1, "center_y": .9}
-                            on_release:
-                                app.screen("name")
-                        MDTextField:
-                            id: poisks
-                            hint_text: "Поиск"
-                            size_hint: .6, None
-                            pos_hint: {"center_x": .51, "center_y": .9}
-                        MDIconButton:
-                            icon: "search-web"
-                            pos_hint: {"center_x": .8, "center_y": .9}
-                            on_release:
-                                app.show_example_grid_bottom_sheet()
-                        MDIconButton:
-                            id: acc
-                            icon: "account-circle-outline"
-                            font_size: "60sp"
-                            pos_hint: {"center_x": .9, "center_y": .909}
-                            on_release:
-                                app.account()
+                        text: 'Новости'
+                        icon: 'newspaper-variant-multiple-outline'
+                        MDCard:
+                            id: Enters
+                            md_bg_color: "grey"
+                            pos_hint: {"center_x": 1.5, "center_y": .5}
+                            size_hint: .9, .9
+                            radius: 36
+                            MDBoxLayout:
+                                orientation: 'vertical'
+                                FitImage:
+                                    source: "D:/TravelGo/TravelGo/Photo/camera.png"
+                                    radius: 36
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            spacing: dp(10)
+                            padding: dp(20)
 
+                            MDBoxLayout:
+                                adaptive_height: True
+                                id: man
+
+                                MDIconButton:
+                                    icon: 'magnify'
+                                    on_release: app.search_news()
+                                MDTextField:
+                                    id: search_field
+                                    hint_text: 'Search icon'
+                                TooltipMDIconButton:
+                                    icon: 'exit-to-app'
+                                    tooltip_text: 'Войти'
+                                    on_release: app.data()
+
+                            ScrollView:
+                                scroll_timeout : 150
+                                MDList:
+                                    id: rv
 
                     MDBottomNavigationItem:
                         name: 'screen 3'
                         text: 'Профиль'
                         icon: 'account-settings-outline'
                         FitImage:
-                            source: "/TravelGo/Photo/camera.png"
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                         BoxLayout:
                             orientation: "vertical"
                             padding: "6dp"
@@ -109,25 +88,195 @@ Screen:
 
                                 MDList:
                                     OneLineAvatarListItem:
-                                        on_release: app.screen("settingadmin")
-                                        text: "Настройки профиля"
+                                        on_release: app.screen("enter")
+                                        text: "Войти"
+                                        IconLeftWidget:
+                                            icon: "exit-to-app"
+
+            Screen:
+                name: "enter"
+                FitImage:
+                    size_hint: 1, 1
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/In2.png"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                MDTextField:
+                    id: login
+                    size_hint: .73, .09
+                    width: "400dp"
+                    hint_text: "Login"
+                    pos_hint: {"center_x": .5, "center_y": .55}
+                MDTextField:
+                    id: password
+                    size_hint: .73, .09
+                    width: "400dp"
+                    hint_text: "Password"
+                    pos_hint: {"center_x": .5, "center_y": .45}
+                MDFlatButton:
+                    text: ""
+                    font_size: "5sp"
+                    pos_hint: {"center_x": .5, "center_y": .275}
+                    on_press:
+                        app.log_in()
+                MDFlatButton:
+                    text: ""
+                    font_size: "5sp"
+                    pos_hint: {"center_x": .58, "center_y": .135}
+                    on_press:
+                        app.screen("creatbs")
+            Screen:
+                name: "tune"
+                MDTextField:
+                    hint_text: "от 0"
+                    radius: [15, 15, 15, 15,]
+                    mode: "fill"
+                    size_hint: .25, None
+                    pos_hint: {"center_x": .35, "center_y": .9}
+                    fill_color: 0, 0, 0, .4
+                MDTextField:
+                    hint_text: "до 200000"
+                    radius: [15, 15, 15, 15,]
+                    mode: "fill"
+                    size_hint: .25, None
+                    pos_hint: {"center_x": .65, "center_y": .9}
+                    fill_color: 0, 0, 0, .4
+                MDIconButton:
+                    icon: "arrow-left-circle-outline"
+                    user_font_size: "50sp"
+                    pos_hint: {"center_x": .07, "center_y": .95}
+                    on_release:
+                        app.screen("home")
+            Screen:
+                name: "events"
+                MDBottomNavigation:
+                    panel_color: .2, .2, .2, 1
+                    MDBottomNavigationItem:
+                        name: '1'
+                        text: 'Мероприятие'
+                        icon: 'newspaper-variant-multiple-outline'
+                        FitImage:
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                        ScrollView:
+                            scroll_timeout : 150
+                            MDList:
+                                id: ms
+
+
+                    MDBottomNavigationItem:
+                        name: '2'
+                        text: 'Добавить'
+                        icon: 'newspaper-variant-multiple-outline'
+                        FitImage:
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                        MDFlatButton:
+                            text: "Мероприятие"
+                            font_size: "50sp"
+                            pos_hint: {"center_x": .5, "center_y": .9}
+                        MDTextField:
+                            id: nameevents
+                            hint_text: "Название мероприятия"
+                            mode: "rectangle"
+                            pos_hint: {"center_x": .5, "center_y": .7}
+                            size_hint: .9, None
+                        MDTextField:
+                            id: eventsgo
+                            mode: "rectangle"
+                            hint_text: "Куда едим?"
+                            pos_hint: {"center_x": .5, "center_y": .6}
+                            size_hint: .9, None
+                        MDTextField:
+                            id: eventsmany
+                            mode: "rectangle"
+                            hint_text: "Сколько готовы потратить?"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            size_hint: .9, None
+                        MDFillRoundFlatIconButton:
+                            pos_hint: {"center_x": .5, "center_y": .2}
+                            text: "Создать"
+                            icon: "content-save-all"
+                            on_release:
+                                app.eventscreate()
+
+            Screen:
+                name: "home"
+                MDBottomNavigation:
+                    panel_color: .2, .2, .2, 1
+                    MDBottomNavigationItem:
+                        name: 'screen 1'
+                        text: 'Новости'
+                        icon: 'newspaper-variant-multiple-outline'
+                        FitImage:
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            spacing: dp(10)
+                            padding: dp(20)
+
+                            MDBoxLayout:
+                                adaptive_height: True
+                                id: man
+
+                                MDIconButton:
+                                    icon: 'magnify'
+                                    on_release: app.search_news()
+                                MDTextField:
+                                    id: search_field
+                                    hint_text: 'Search icon'
+                            ScrollView:
+                                scroll_timeout : 150
+                                MDList:
+                                    id: rv
+
+                    MDBottomNavigationItem:
+                        name: 'screen 3'
+                        text: 'Профиль'
+                        icon: 'account-settings-outline'
+                        FitImage:
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                        BoxLayout:
+                            orientation: "vertical"
+                            padding: "6dp"
+                            spacing: "6dp"
+                            MDIconButton:
+                                id: iconhome
+                                pos_hint: {"center_x": .5, "center_y": .9}
+                                user_font_size: "128sp"
+                                icon: "account-circle-outline"
+                                on_release: app.file_manager_open(0)
+
+                            MDLabel:
+                                text: "Васильев Андрей Витальевич"
+                                font_style: "Button"
+                                size_hint_y: None
+                                halign: "center"
+                                font_style: "H4"
+
+                            ScrollView:
+
+                                MDList:
+                                    OneLineAvatarListItem:
+                                        on_release: app.screen("events")
+                                        text: "Мероприятие"
                                         IconLeftWidget:
                                             icon: "cog"
                                     OneLineAvatarListItem:
-                                        on_release: app.show_ate_picker()
-                                        text: "Отзывы"
+                                        on_release: app.screen("GPT")
+                                        text: "Задать вопрос нейросети"
                                         IconLeftWidget:
-                                            icon: "message-text-outline"
-
+                                            icon: "openid"
             Screen:
                 name: "creatbs"
                 FitImage:
                     size_hint: 1, 1
-                    source: "/TravelGo/Photo/Up.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/Up2.png"
                     pos_hint: {"center_x": .5, "center_y": .5}
+                MDIconButton:
+                    icon: "arrow-left-circle-outline"
+                    pos_hint: {"center_x": .15, "center_y": .9}
+                    user_font_size: "64sp"
+                    on_press:
+                        app.screen('enter')
                 MDTextField:
                     id: log
-                    hint_text_color_normal: "Black"
                     size_hint: .68, .07
                     width: "400dp"
                     hint_text: "Login"
@@ -141,10 +290,10 @@ Screen:
                     pos_hint: {"center_x": .49, "center_y": .535}
                 MDTextField:
                     id: email
-                    hint_text_color_normal: "Black"
                     size_hint: .68, .07
                     width: "400dp"
                     hint_text: "E-mail"
+                    validator: "email"
                     helper_text: "user@gmail.com"
                     helper_text_mode: "on_focus"
                     pos_hint: {"center_x": .49, "center_y": .435}
@@ -173,25 +322,28 @@ Screen:
                 name: "partner"
                 FitImage:
                     size_hint: 1, 1
-                    source: "/TravelGo/Photo/partner.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/Up2.png"
                     pos_hint: {"center_x": .5, "center_y": .5}
+                MDIconButton:
+                    icon: "arrow-left-circle-outline"
+                    pos_hint: {"center_x": .15, "center_y": .9}
+                    user_font_size: "64sp"
+                    on_press:
+                        app.screen('enter')
                 MDTextField:
                     id: namecom
-                    hint_text_color_normal: "Black"
                     size_hint: .68, .07
                     width: "400dp"
                     hint_text: "Name Company"
                     pos_hint: {"center_x": .49, "center_y": .59}
                 MDTextField:
                     id: logincom
-                    hint_text_color_normal: "black"
                     size_hint: .68, .07
                     width: "400dp"
                     hint_text: "Login"
                     pos_hint: {"center_x": .49, "center_y": .49}
                 MDTextField:
                     id: pasecom
-                    hint_text_color_normal: "black"
                     size_hint: .68, .07
                     width: "400dp"
                     hint_text: "Password"
@@ -210,7 +362,7 @@ Screen:
                         text: 'Туры'
                         icon: 'briefcase-plus-outline'
                         FitImage:
-                            source: "/TravelGo/Photo/camera.png"
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                         ScrollView:
                             scroll_timeout : 150
                             MDList:
@@ -232,14 +384,14 @@ Screen:
                         text: 'Отели'
                         icon: 'domain-plus'
                         FitImage:
-                            source: "/TravelGo/Photo/camera.png"
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
 
                     MDBottomNavigationItem:
                         name: 'screen 3'
                         text: 'Профиль'
                         icon: 'account-settings-outline'
                         FitImage:
-                            source: "/TravelGo/Photo/camera.png"
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                         BoxLayout:
                             orientation: "vertical"
                             padding: "6dp"
@@ -273,7 +425,79 @@ Screen:
                                             icon: "message-text-outline"
 
             Screen:
-                name: "settingadmin"
+                name: "travela"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    FloatLayout:
+                        FitImage:
+                            id: imagetravel
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                            size_hint: 1, 1
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                        MDLabel:
+                            id: nametravel
+                            text: ""
+                            font_style: "H5"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                        MDIconButton:
+                            icon: "arrow-left-circle-outline"
+                            user_font_size: "40sp"
+                            pos_hint: {"center_x": .055, "center_y": .98}
+                            on_release:
+                                app.screen("home")
+                    MDTextField:
+                        id: optravel
+                        mode: "fill"
+                        size_hint: .95, None
+                        max_height: "250dp"
+                        fill_color: 0, 0, 0, .4
+                        multiline: True
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        FitImage:
+                            id: h1travel
+                            radius: [15, 15, 15, 15,]
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                            size_hint: 1, 1
+                        FitImage:
+                            id: h2travel
+                            radius: [15, 15, 15, 15,]
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                            size_hint: 1, 1
+                        FitImage:
+                            id: h3travel
+                            radius: [15, 15, 15, 15,]
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                            size_hint: 1, 1
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        FitImage:
+                            id: h4travel
+                            radius: [15, 15, 15, 15,]
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                            size_hint: 1, 1
+                        FitImage:
+                            id: h5travel
+                            radius: [15, 15, 15, 15,]
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
+                            size_hint: 1, 1
+                    MDTextField:
+                        id: phonetravel
+                        hint_text: "Phone"
+                        mode: "fill"
+                        size_hint: .95, None
+                        fill_color: 0, 0, 0, .4
+                    MDTextField:
+                        id: emailtravel
+                        hint_text: "E-mail"
+                        mode: "fill"
+                        size_hint: .95, None
+                        fill_color: 0, 0, 0, .4
+                    MDFillRoundFlatIconButton:
+                        text: "Отзывы"
+                        icon: "wechat"
+                        on_release:
+                            app.screen('commets')
 
             MDScreen:
                 name: "createtravel"
@@ -294,27 +518,27 @@ Screen:
                 FitImage:
                     id: h1
                     pos_hint: {"center_x": .1, "center_y": .5}
-                    source: "/TravelGo/Photo/camera.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h2
                     pos_hint: {"center_x": .3, "center_y": .5}
-                    source: "/TravelGo/Photo/camera.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h3
                     pos_hint: {"center_x": .5, "center_y": .5}
-                    source: "/TravelGo/Photo/camera.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h4
                     pos_hint: {"center_x": .7, "center_y": .5}
-                    source: "/TravelGo/Photo/camera.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 FitImage:
                     id: h5
                     pos_hint: {"center_x": .9, "center_y": .5}
-                    source: "/TravelGo/Photo/camera.png"
+                    source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                     size_hint: .15, .1
                 MDIconButton:
                     icon: "camera"
@@ -356,7 +580,7 @@ Screen:
                 FitImage:
                     id: camera
                     pos_hint: {"center_x": .5, "center_y": .9}
-                    source: "/TravelGo/Photo/camera.png"
+                    source: "C:/User/UI/PycharmProjects/TravelGo/Photo/camera.png"
                     size_hint: 1, .21
                 MDIconButton:
                     icon: "camera"

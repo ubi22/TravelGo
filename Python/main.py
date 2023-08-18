@@ -24,6 +24,9 @@ from kivy.factory import Factory
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.clock import Clock
 from kivymd.uix.dialog import MDDialog
+from kivy.properties import StringProperty
+from kivy.uix.screenmanager import Screen
+from kivymd.icon_definitions import md_icons
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.list import ThreeLineListItem
@@ -53,8 +56,8 @@ from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivymd.toast import toast
+from kivy.animation import Animation
 from kivy.core.window import Window
-from kivymd.utils.fitimage import FitImage
 from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
 from kivy.properties import StringProperty
@@ -80,19 +83,20 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.snackbar import Snackbar
 from kivy.factory import Factory
 from kivymd.uix.button import MDIconButton
-
+from bs4 import BeautifulSoup
+import requests
+import sqlite3
+import time
 Window.size = (480, 800)
 
 
 class ContentNavigationDrawer(FloatLayout):
     screen_manager = ObjectProperty()
 
-
-
 def md5sum(value):
     return hashlib.md5(value.encode()).hexdigest()
 
-with sqlite3.connect('databaseadmin.db') as db:
+with sqlite3.connect('DBBrowser/databaseadmin.db') as db:
     cursor = db.cursor()
     query = """
     CREATE TABLE IF NOT EXISTS admin(
@@ -108,7 +112,45 @@ with sqlite3.connect('databaseadmin.db') as db:
 
     cursor.executescript(query)
 
-with sqlite3.connect('database.db') as db:
+with sqlite3.connect('DBBrowser/comment.db') as db:
+    cursor = db.cursor()
+    query = """
+    CREATE TABLE IF NOT EXISTS admin(
+        id INTEGER PRIMARY KEY,
+        user TEXT,
+        text TEXT
+    
+
+)
+    """
+
+    cursor.executescript(query)
+
+with sqlite3.connect('DBBrowser/mydb.db') as db:
+    cursor = db.cursor()
+    query = """
+    CREATE TABLE IF NOT EXISTS search(
+        id INTEGER,
+        name TEXT,
+        price TEXT,
+        description TEXT,
+        img TEXT,
+        PRIMARY KEY(ID)
+)
+    """
+
+with sqlite3.connect('DBBrowser/housebase.db') as db:
+    cursor = db.cursor()
+    query = """
+    CREATE TABLE IF NOT EXISTS users(
+        id INTEGER PRIMARY KEY,
+        name TEXT
+)
+    """
+
+    cursor.executescript(query)
+
+with sqlite3.connect('DBBrowser/cafebase.db') as db:
     cursor = db.cursor()
     query = """
     CREATE TABLE IF NOT EXISTS users(
@@ -123,11 +165,37 @@ with sqlite3.connect('database.db') as db:
 
     cursor.executescript(query)
 
-with sqlite3.connect('search-base.db') as fut:
+with sqlite3.connect('DBBrowser/merpb.db') as fut:
     db = fut.cursor()
     table = """
     CREATE TABLE IF NOT EXISTS search(
         name TEXT,
+        kyda TEXT,
+        budget TEXT,
+        user TEXT
+
+)
+    """
+    db.executescript(table)
+
+with sqlite3.connect('DBBrowser/database.db') as fut:
+    db = fut.cursor()
+    table = """
+    CREATE TABLE IF NOT EXISTS users(
+        login TEXT, 
+        password TEXT,
+        email TEXT,
+        name TEXT
+
+)
+    """
+    db.executescript(table)
+
+with sqlite3.connect('DBBrowser/search-base.db') as fut:
+    db = fut.cursor()
+    table = """
+    CREATE TABLE IF NOT EXISTS search(
+        name TEXT, 
         opis TEXT,
         num TEXT,
         gmail TEXT,
@@ -146,9 +214,13 @@ with sqlite3.connect('search-base.db') as fut:
 
 
 class sDrawer(BoxLayout):
+    btn = ObjectProperty(None)
+    def save_user_name(self):
+        self.remove_widget(self.btn)
+class CustomOneLineIconListItem(OneLineIconListItem):
+    icon = StringProperty()
+class msdDrawer(BoxLayout):
     pass
-
-
 v = None
 class TravelGO(MDApp):
 
@@ -162,6 +234,8 @@ class TravelGO(MDApp):
             preview=True,
         )
         self.se = []
+        self.conten = sDrawer()
+
 
     def build(self):
         self.theme_cls.theme_style = "Dark"
@@ -170,6 +244,28 @@ class TravelGO(MDApp):
 
     def screen(self, sed):
         self.root.ids.screen_manager.current = sed
+    def eventsname(self):
+        search = self.root.ids.login.text
+        fut = sqlite3.connect("DBBrowser/merpb.db")
+        searchs = fut.cursor()
+        searchs.execute(f'''SELECT * FROM search WHERE user LIKE '%{search}%';''')
+        three_results = searchs.fetchall()
+        s = len(three_results)
+        print(s)
+        for i in range(s):
+            conten = sDrawer()
+            self.se.append(
+                conten.add_widget(
+                    ThreeLineListItem(
+                        text=f'{three_results[i][0]}',
+                        secondary_text=f"{three_results[i][1]}",
+                        tertiary_text=f"{three_results[i][2]}",
+                        on_press=lambda x: self.events_search(x)
+                    )
+                )
+            )
+            self.root.ids.ms.add_widget(conten)
+
 
     def file_manager_open(self, file):
         global v
@@ -198,6 +294,7 @@ class TravelGO(MDApp):
             self.file_manager.show('/')
             v = "protravel"
         self.manager_open = True
+
 
     def select_path(self, path):
         '''It will be called when you click on the file name
@@ -244,7 +341,7 @@ class TravelGO(MDApp):
         password = self.root.ids.pasecom.text
         name = self.root.ids.namecom.text
         try:
-            db = sqlite3.connect("databaseadmin.db")
+            db = sqlite3.connect("DBBrowser/databaseadmin.db")
             cursor = db.cursor()
 
             db.create_function("md5", 1, md5sum)
@@ -272,7 +369,7 @@ class TravelGO(MDApp):
         email = self.root.ids.email.text
         name = self.root.ids.name.text
         try:
-            db = sqlite3.connect("database.db")
+            db = sqlite3.connect("DBBrowser/database.db")
             cursor = db.cursor()
 
             db.create_function("md5", 1, md5sum)
@@ -297,14 +394,13 @@ class TravelGO(MDApp):
     def log_in(self):
         login = self.root.ids.login.text
         password = self.root.ids.password.text
-
         try:
-            db = sqlite3.connect("database.db")
+            db = sqlite3.connect("DBBrowser/database.db")
             cursor = db.cursor()
             db.create_function("md5", 1, md5sum)
             cursor.execute("SELECT login FROM users WHERE login = ?", [login])
             if cursor.fetchone() is None:
-                ss = sqlite3.connect("databaseadmin.db")
+                ss = sqlite3.connect("DBBrowser/databaseadmin.db")
                 cur = ss.cursor()
                 ss.create_function("md5", 1, md5sum)
                 cur.execute("SELECT login FROM admin WHERE login = ?", [login])
@@ -324,11 +420,141 @@ class TravelGO(MDApp):
                     toast("Пороль не верный")
                 else:
                     toast("Вы вошли")
-                    self.root.ids.screen_manager.current = "home"
+                    self.eventsname()
+                    self.root.ids.screen_manager.current = "events"
         finally:
             cursor.close()
             db.close()
+    def eventscreate(self):
+        name = self.root.ids.nameevents.text
+        go = self.root.ids.eventsgo.text
+        budget = self.root.ids.eventsmany.text
+        user = self.root.ids.login.text
+        mif = self.root.ids.eventsgo.text
+        mydb = sqlite3.connect("DBBrowser/mydb.db")
+        mydbs = mydb.cursor()
+        fut = sqlite3.connect("DBBrowser/merpb.db")
+        searchs = fut.cursor()
+        values = [name, go, budget, user]
+        searchs.execute("INSERT INTO search(name, kyda, budget, user) VALUES(?,?,?,?)", values)
+        self.root.ids.screen_manager.current = "home"
+        mydbs.execute(f'''SELECT * FROM search WHERE name LIKE '%{mif}%';''')
+        three_results = mydbs.fetchall()
+        self.root.ids.rv.clear_widgets()
+        if len(three_results) == 0:
+            toast('Такого преподователя нет')
+        else:
+            s = len(three_results)
+            if s >= 30:
+                s = 30
+            print(s)
+            for i in range(s):
+                conten = sDrawer()
+                conten.add_widget(
+                    FitImage(
+                        source=f"{three_results[i][4]}",
+                        size_hint={0.4, 0.77}
+                    )
+                )
+                self.se.append(
+                    conten.add_widget(
+                        ThreeLineListItem(
+                            text=f'{three_results[i][1]}',
+                            secondary_text=f"{three_results[i][3]}",
+                            tertiary_text=f"{three_results[i][2]}",
+                            on_press=lambda x: self.screen_travel(x)
+                        )
+                    )
+                )
+                self.root.ids.rv.add_widget(conten)
+        fut.commit()
+    def events_search(self, x):
+        fut = sqlite3.connect("DBBrowser/mydb.db")
+        searchs = fut.cursor()
+        self.root.ids.screen_manager.current = 'home'
+        searchs.execute(f'''SELECT * FROM search WHERE name LIKE '%{x.secondary_text}%';''')
+        three_results = searchs.fetchall()
+        self.root.ids.rv.clear_widgets()
+        if len(three_results) == 0:
+            toast('Такого преподователя нет')
+        else:
+            s = len(three_results)
+            if s >= 30:
+                s = 30
+            print(s)
+            for i in range(s):
+                conten = sDrawer()
+                conten.add_widget(
+                    FitImage(
+                        source=f"{three_results[i][4]}",
+                        size_hint={0.4, 0.77}
+                    )
+                )
+                self.se.append(
+                    conten.add_widget(
+                        ThreeLineListItem(
+                            text=f'{three_results[i][1]}',
+                            secondary_text=f"{three_results[i][3]}",
+                            tertiary_text=f"{three_results[i][2]}",
+                            on_press=lambda x: self.screen_travel(x)
+                        )
+                    )
+                )
+                self.root.ids.rv.add_widget(conten)
+    def search_news(self):
+        search = self.root.ids.search_field.text
+        fut = sqlite3.connect("DBBrowser/mydb.db")
+        searchs = fut.cursor()
+        searchs.execute(f'''SELECT * FROM search WHERE name LIKE '%{search}%';''')
+        three_results = searchs.fetchall()
+        self.root.ids.rv.clear_widgets()
+        if len(three_results) == 0:
+            toast('Такого преподователя нет')
+        else:
+            s = len(three_results)
+            print(s)
+            if s > 30:
+                s = 30
+            print(s)
+            for i in range(s):
+                conten = sDrawer()
+                conten.add_widget(
+                    FitImage(
+                        source=f"{three_results[i][4]}",
+                        size_hint={0.4, 0.77}
+                    )
+                )
+                self.se.append(
+                    conten.add_widget(
+                        ThreeLineListItem(
+                            text=f'{three_results[i][1]}',
+                            secondary_text=f"{three_results[i][3]}",
+                            tertiary_text=f"{three_results[i][2]}",
+                            on_press=lambda x: self.screen_travel(x)
+                        )
+                    )
+                )
+                self.root.ids.rv.add_widget(conten)
 
+    def screen_travel(self, x):
+        fut = sqlite3.connect("DBBrowser/mydb.db")
+        searchs = fut.cursor()
+        searchs.execute(f'''SELECT * FROM search WHERE name LIKE '%{x.text}%';''')
+        three_results = searchs.fetchall()
+        if len(three_results) == 0:
+            toast('Такого преподователя нет')
+        else:
+            self.root.ids.optravel.text = f"{three_results[0][3]}"
+            self.screen("travela")
+            self.root.ids.imagetravel.source = f"{three_results[0][4]}"
+            self.root.ids.h1travel.source = f"{three_results[0][9]}"
+            self.root.ids.h2travel.source = f"{three_results[0][5]}"
+            self.root.ids.h3travel.source = f"{three_results[0][6]}"
+            self.root.ids.h4travel.source = f"{three_results[0][7]}"
+            self.root.ids.h5travel.source = f"{three_results[0][8]}"
+            self.root.ids.phonetravel.text = f"7(987) 123-80-50"
+            self.root.ids.emailtravel.text = f"zoom.main21@gmail.com"
+            self.root.ids.nametravel.text = f"{three_results[0][1]}"
     def create(self):
         name = self.root.ids.namet.text
         opis = self.root.ids.op.text
@@ -343,7 +569,7 @@ class TravelGO(MDApp):
         login = self.root.ids.login.text
         sale = self.root.ids.sele.text
         try:
-            fut = sqlite3.connect("search-base.db")
+            fut = sqlite3.connect("DBBrowser/search-base.db")
             searchs = fut.cursor()
             values = [name, opis, num, gmaila, h1, h2, h3, h4, h5, camera, login, sale]
             searchs.execute("INSERT INTO search(name, opis, num, gmail, h1, h2, h3, h4, h5, camera, login, sale) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",values)
@@ -356,7 +582,7 @@ class TravelGO(MDApp):
     def tyr(self):
         try:
             poisk = self.root.ids.login.text
-            fut = sqlite3.connect("search-base.db")
+            fut = sqlite3.connect("DBBrowser/search-base.db")
             searchs = fut.cursor()
             searchs.execute(f'''SELECT * FROM search WHERE login LIKE '%{poisk}%';''')
             three_results = searchs.fetchall()
@@ -365,14 +591,19 @@ class TravelGO(MDApp):
             else:
                 s = len(three_results)
                 print(s)
+                if s >= 30:
+                    s = 30
                 for i in range(s):
-                    conten = sDrawer()
-                    conten.add_widget(FitImage(source=f"{three_results[i][9]}", size_hint={0.25, 0.59}))
+                    prconten = sDrawer()
+                    prconten.add_widget(
+                        FitImage(
+                            source=f"{three_results[i][4]}", size_hint={0.25, 0.59}))
                     self.se.append(
-                        conten.add_widget(
+                        prconten.add_widget(
                             ThreeLineListItem(
                                 text=f'{three_results[i][0]}',
                                 secondary_text=f"{three_results[i][1]}",
+                                tertiary_text=f"{three_results[i][11]}",
                                 on_press=lambda x: self.compiration(x) #self.compiration(
                                     # m=self.se.index(
                                     #     conten
@@ -380,21 +611,32 @@ class TravelGO(MDApp):
                             )
                          )
                     )
-                    self.root.ids.md_list.add_widget(conten)
+                    self.root.ids.md_list.add_widget(prconten)
 
 
         except sqlite3.Error as e:
                 print("Error", e)
+    def data(self):
+        anim = Animation(pos_hint=({"center_x": .5, "center_y": .5}))
+        anim.start(self.root.ids.Enters)
     def compiration(self, x):
-        print(x.text)
-        # if m == 0:
-        #     print("0")
-        # elif m == 1:
-        #     print("1")
-        # elif m == 2:
-        #     print("2")
-        # elif m == 3:
-        #     print("3")
-        # elif m == 4:
-        #     print("4")
+        fut = sqlite3.connect("DBBrowser/search-base.db")
+        searchs = fut.cursor()
+        searchs.execute(f'''SELECT * FROM search WHERE name LIKE '%{x.text}%';''')
+        three_results = searchs.fetchall()
+        if len(three_results) == 0:
+            toast('Такого преподователя нет')
+        else:
+            self.root.ids.optravel.text = f"{three_results[0][1]}"
+            self.screen("travela")
+            self.root.ids.imagetravel.source = f"{three_results[0][9]}"
+            self.root.ids.h1travel.source = f"{three_results[0][4]}"
+            self.root.ids.h2travel.source = f"{three_results[0][5]}"
+            self.root.ids.h3travel.source = f"{three_results[0][6]}"
+            self.root.ids.h4travel.source = f"{three_results[0][7]}"
+            self.root.ids.h5travel.source = f"{three_results[0][8]}"
+            self.root.ids.phonetravel.text = f"{three_results[0][2]}"
+            self.root.ids.emailtravel.text = f"{three_results[0][3]}"
+            self.root.ids.nametravel.text = f"{three_results[0][0]}"
+
 TravelGO().run()
