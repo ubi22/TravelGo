@@ -4,6 +4,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, ListProperty
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.metrics import dp
+import requests
+import json
 from kivymd.uix.tab import MDTabsBase
 from kivymd.app import MDApp
 from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
@@ -29,7 +31,7 @@ from kivy.uix.screenmanager import Screen
 from kivymd.icon_definitions import md_icons
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.list import ThreeLineListItem
+from kivymd.uix.list import ThreeLineIconListItem
 from kivymd.uix.button import MDFlatButton
 import webbrowser
 from kivymd.uix.textfield import MDTextField
@@ -43,6 +45,16 @@ from kivy.core.window import Window
 from kivy.core.window import Window
 import sqlite3
 import hashlib
+from kivy.lang import Builder
+from kivy.properties import StringProperty
+from kivy.uix.screenmanager import Screen
+from kivymd.uix.card import MDCard
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.utils.fitimage import FitImage
+from kivymd.uix.label import MDLabel
+from kivymd.uix.card import MDSeparator
+from kivymd.uix.button import MDIconButton
+from kivy.lang import Builder
 from kivy.uix.modalview import ModalView
 from kivy.lang import Builder
 from kivymd.uix.list import MDList
@@ -71,7 +83,8 @@ from kivy.metrics import dp
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import StringProperty
-
+from kivymd.utils.fitimage import FitImage
+from kivymd.uix.screen import MDScreen
 from kivymd.uix.list import OneLineIconListItem
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
@@ -88,13 +101,16 @@ import requests
 import sqlite3
 import time
 Window.size = (480, 800)
+API = '6c39b074-59ea-4ce3-8924-c1b26f5e9137'
 
 
 class ContentNavigationDrawer(FloatLayout):
     screen_manager = ObjectProperty()
 
+
 def md5sum(value):
     return hashlib.md5(value.encode()).hexdigest()
+
 
 with sqlite3.connect('DBBrowser/databaseadmin.db') as db:
     cursor = db.cursor()
@@ -256,7 +272,7 @@ class TravelGO(MDApp):
             conten = sDrawer()
             self.se.append(
                 conten.add_widget(
-                    ThreeLineListItem(
+                    ThreeLineIconListItem(
                         text=f'{three_results[i][0]}',
                         secondary_text=f"{three_results[i][1]}",
                         tertiary_text=f"{three_results[i][2]}",
@@ -458,7 +474,7 @@ class TravelGO(MDApp):
                 )
                 self.se.append(
                     conten.add_widget(
-                        ThreeLineListItem(
+                        ThreeLineIconListItem(
                             text=f'{three_results[i][1]}',
                             secondary_text=f"{three_results[i][3]}",
                             tertiary_text=f"{three_results[i][2]}",
@@ -492,7 +508,7 @@ class TravelGO(MDApp):
                 )
                 self.se.append(
                     conten.add_widget(
-                        ThreeLineListItem(
+                        ThreeLineIconListItem(
                             text=f'{three_results[i][1]}',
                             secondary_text=f"{three_results[i][3]}",
                             tertiary_text=f"{three_results[i][2]}",
@@ -501,15 +517,37 @@ class TravelGO(MDApp):
                     )
                 )
                 self.root.ids.rv.add_widget(conten)
-    def search_news(self):
-        search = self.root.ids.search_field.text
+    def search_news(self, x = 0):
+        TEXT = 'Новочебоксарск, кафе'
+        # колличество запросов, то есть заведений которых код выдаст, максимум 50
+        RESULTS = 10
+
+        response = requests.get(
+            f'https://search-maps.yandex.ru/v1/?apikey={API}&text={TEXT}&lang=ru_RU&results={RESULTS}')
+        text = json.loads(response.text)
+        print(len(text['features']))
+        for i in text['features']:
+            # тут по порядку: название, вид, описание, адресс, номер, время работы. Делай с ними что хочешь в этом цикле
+            name = i['properties']['CompanyMetaData']['name']
+            clas = i['properties']['CompanyMetaData']['Categories'][0]['name']
+            description = i['properties']['description']
+            address = i['properties']['CompanyMetaData']['address']
+            phone = i['properties']['CompanyMetaData']['Phones'][0]['formatted']
+            hours = i['properties']['CompanyMetaData']['Hours']['Availabilities']
+            print(name, '\n', clas, '\n', description, '\n', address, '\n', phone, '\n', hours, '\n')
+        if x == 0:
+            search = self.root.ids.search_field.text
+            self.root.ids.rv.clear_widgets()
+        else:
+            search = self.root.ids.search_field2.text
+            self.root.ids.rv2.clear_widgets()
         fut = sqlite3.connect("DBBrowser/mydb.db")
         searchs = fut.cursor()
         searchs.execute(f'''SELECT * FROM search WHERE name LIKE '%{search}%';''')
         three_results = searchs.fetchall()
-        self.root.ids.rv.clear_widgets()
+
         if len(three_results) == 0:
-            toast('Такого преподователя нет')
+            toast('Такого нет')
         else:
             s = len(three_results)
             print(s)
@@ -518,23 +556,69 @@ class TravelGO(MDApp):
             print(s)
             for i in range(s):
                 conten = sDrawer()
-                conten.add_widget(
-                    FitImage(
-                        source=f"{three_results[i][4]}",
-                        size_hint={0.4, 0.77}
-                    )
-                )
                 self.se.append(
-                    conten.add_widget(
-                        ThreeLineListItem(
-                            text=f'{three_results[i][1]}',
-                            secondary_text=f"{three_results[i][3]}",
-                            tertiary_text=f"{three_results[i][2]}",
-                            on_press=lambda x: self.screen_travel(x)
-                        )
+                    MDCard(
+                        orientation="vertical",
+                        size_hint=(.5, None),
+                        height=ids.box_top.height + ids.box_bottom.height,
+                        focus_behavior=True,
+                        ripple_behavior=True,
+                        pos_hint={"center_x": .5, "center_y": .5},
+                        children=[
+                            MDBoxLayout(
+                                id='box_top',
+                                spacing="20dp",
+                                adaptive_height=True,
+                            ),
+                            FitImage(
+                                source="/Users/macbookair/album.jpeg",
+                                size_hint=(.3, None),
+                                height=text_box.height,
+                            ),
+                            MDBoxLayout(
+                                id='text_box',
+                                orientation="vertical",
+                                adaptive_height=True,
+                                spacing="10dp",
+                                padding=(0, "10dp", "10dp", "10dp"),
+                            ),
+                            MDLabel(
+                                text="Ride the Lightning",
+                                theme_text_color="Primary",
+                                font_style="H5",
+                                bold=True,
+                                size_hint_y=None,
+                                height=self.texture_size[1],
+                            ),
+                            MDLabel(
+                                text="July 27, 1984",
+                                size_hint_y=None,
+                                height=self.texture_size[1],
+                                theme_text_color="Primary",
+                            ),
+                            MDSeparator(),
+                            MDBoxLayout(
+                                id='box_bottom',
+                                adaptive_height=True,
+                                padding=("10dp", 0, 0, 0),
+                            ),
+                            MDLabel(
+                                text="Rate this album",
+                                size_hint_y=None,
+                                height=self.texture_size[1],
+                                pos_hint={"center_y": .5},
+                                theme_text_color="Primary",
+                            ),
+                            MDIconButton(
+                                icon='star'
+                            ),
+                        ]
                     )
                 )
-                self.root.ids.rv.add_widget(conten)
+                if x == 0:
+                    self.root.ids.rv.add_widget(conten)
+                else:
+                    self.root.ids.rv2.add_widget(conten)
 
     def screen_travel(self, x):
         fut = sqlite3.connect("DBBrowser/mydb.db")
@@ -600,7 +684,7 @@ class TravelGO(MDApp):
                             source=f"{three_results[i][4]}", size_hint={0.25, 0.59}))
                     self.se.append(
                         prconten.add_widget(
-                            ThreeLineListItem(
+                            ThreeLineIconListItem(
                                 text=f'{three_results[i][0]}',
                                 secondary_text=f"{three_results[i][1]}",
                                 tertiary_text=f"{three_results[i][11]}",

@@ -59,7 +59,6 @@ for i in range(int(maxpage))[1::]:
         description = soup2.find('div', {'class': 'article-text tour-main-info__description'}).text.strip()
         images = soup2.find_all('img', {'class': 'tile-gallery__image'})
         images_list = []
-        print(images)
         for i in images:
             # images_list.append(img['src'])
             if images.index(i) == 5:

@@ -24,17 +24,8 @@ Screen:
                         name: 'screen 1'
                         text: 'Новости'
                         icon: 'newspaper-variant-multiple-outline'
-                        MDCard:
-                            id: Enters
-                            md_bg_color: "grey"
-                            pos_hint: {"center_x": 1.5, "center_y": .5}
-                            size_hint: .9, .9
-                            radius: 36
-                            MDBoxLayout:
-                                orientation: 'vertical'
-                                FitImage:
-                                    source: "D:/TravelGo/TravelGo/Photo/camera.png"
-                                    radius: 36
+                        FitImage:
+                            source: "C:/Users/UI/PycharmProjects/TravelGo/Photo/camera.png"
                         MDBoxLayout:
                             orientation: 'vertical'
                             spacing: dp(10)
@@ -43,22 +34,21 @@ Screen:
                             MDBoxLayout:
                                 adaptive_height: True
                                 id: man
-
-                                MDIconButton:
+                                TooltipMDIconButton:
+                                    tooltip_text: 'Поиск'
                                     icon: 'magnify'
-                                    on_release: app.search_news()
+                                    on_release: app.search_news(1)
                                 MDTextField:
-                                    id: search_field
+                                    id: search_field2
                                     hint_text: 'Search icon'
                                 TooltipMDIconButton:
-                                    icon: 'exit-to-app'
                                     tooltip_text: 'Войти'
+                                    icon: 'exit-to-app'
                                     on_release: app.data()
-
                             ScrollView:
                                 scroll_timeout : 150
                                 MDList:
-                                    id: rv
+                                    id: rv2
 
                     MDBottomNavigationItem:
                         name: 'screen 3'
@@ -85,14 +75,22 @@ Screen:
                                 font_style: "H4"
 
                             ScrollView:
-
                                 MDList:
                                     OneLineAvatarListItem:
                                         on_release: app.screen("enter")
                                         text: "Войти"
                                         IconLeftWidget:
                                             icon: "exit-to-app"
-
+                MDCard:
+                    id: Enters
+                    pos_hint: {"center_x": 1.5, "center_y": .5}
+                    size_hint: .92, .92
+                    radius: [36, 36, 36, 36]
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        FitImage:
+                            source: "D:/IT_PY/TravelGO/Photo/camera.png"
+                            radius: [36, 36, 36, 36]
             Screen:
                 name: "enter"
                 FitImage:
